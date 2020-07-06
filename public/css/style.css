@@ -1,0 +1,34 @@
+#login-section{
+    height:100vh;
+    background-color: whitesmoke;
+}
+#login-error{
+    display:none;
+}
+#logout-btn{
+    display: none;
+    position: absolute;
+    top: 48px;
+    z-index:100;
+    background-color: #dedede;
+    width: 140px;
+}
+.topnav{
+    background-color: #2196F3;
+    color:white;
+}
+.right-sidebar{
+    height:90vh;
+    z-index: -1;
+    background-color: #8a8a8a;
+    color:white;
+}
+.right-sidebar li{
+    padding:10px 20px;
+}
+.right-sidebar li a{
+    color:white;
+}
+.navbar {
+    height: 10vh;
+}

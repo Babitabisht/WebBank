@@ -1,0 +1,59 @@
+<div class="container-fluid">
+  <div class="row justify-content-sm-center" id="login-section">
+    <div class="col-sm-6 col-md-4 my-auto">
+      <div class="card border-info text-center">
+        <div class="card-body">
+          <h4 class="text-center">Webbank</h4>
+          <br />
+          <form class="form-signin" id="loginForm">
+            <input type="text" class="form-control mb-2" placeholder="username" id="username" required autofocus>
+            <input type="password" class="form-control mb-2" placeholder="Password" id="password" required>
+            <br />
+            <div class="alert alert-danger alert-dismissible" id="login-error">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <span id="error-msg"></span>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block mb-1" type="button" onclick="login()">Sign in</button>
+            <p>Don't have account! <a href="/register">Sign Up</a></p>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function login() {
+    console.log("inside login");
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
+    postData('login', { username: username, password: password }).then(res => {
+      if (!res.statusCode) {
+        let errorDiv = document.getElementById('login-error');
+        errorDiv.style.display = 'block';
+        document.getElementById('error-msg').innerHTML = res.msg;
+      } else {
+        localStorage.setItem('username', res.username);
+        window.location.href = 'home';
+      }
+    })
+  }
+
+  async function postData(url = '', data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
+</script>

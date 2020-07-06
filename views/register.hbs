@@ -1,0 +1,25 @@
+<div class="container-fluid">
+  <div class="row justify-content-sm-center" id="login-section">
+    <div class="col-sm-6 col-md-4 my-auto">
+      <div class="card border-info text-center">
+        <div class="card-body">
+          <h4 class="text-center">Webbank</h4>
+          <br />
+          <form class="form-signin" id="loginForm">
+            <input type="text" class="form-control mb-2" placeholder="Email" id="username" required autofocus>
+            <input type="password" class="form-control mb-2" placeholder="Password" id="password" required>
+            <input type="password" class="form-control mb-2" placeholder="Confirm Password" id="cpassword" required>
+            <br />
+            <div class="alert alert-danger alert-dismissible" id="login-error">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <span id="error-msg"></span>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block mb-1" type="button" onclick="login()">Register</button>
+            <p>Already have account! <a href="/login">Sign In</a></p>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,139 @@
+<script>
+    function checkToken() {
+       // alert("run");
+        if (!localStorage.getItem('username')) {
+            //alert(3);
+            window.location = '/unauthorised';
+        }
+    }
+    window.load = checkToken();
+</script>
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+    <a class="navbar-brand" href="#">WebBank</a>
+    <div class="navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item" onmouseenter="showLogout()" onmouseleave="hideLogout()">
+                <a class="nav-link" href="#" id="userDisplayName"></a>
+                <div class="btn" id="logout-btn">
+                    <span class="dropdown-item" onclick="logout()">Logout</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row justify-content-sm-center">
+        <div class="col-sm-8 col-md-10 my-auto p-0">
+            <div class="col-md-6 mx-auto">
+                <div class="card border-info text-center">
+                    <div class="card-body">
+                        <h4 class="text-center"></h4>
+                        <br />
+                        <img src="/bank.jpg" alt="" width="200px">
+                        <form class="form-signin">
+                            {{!-- <input type="text" class="form-control mb-2" placeholder="Account Number"
+                                id="account-number" required autofocus>
+                            <br />
+                            <div style="text-align: left;">
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" value="balance">Balance
+                                    </label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" value="deposit">Deposit
+                                    </label>
+                                </div>
+                            </div> --}}
+
+
+                            <br />
+                            <button class="btn btn-lg btn-primary btn-block mb-1" type="button"> Submit</button>
+                        </form>
+                        <br />
+                        {{#if savingAccountNumber}}
+                        <h4 style="text-align:left">Saving Account {{savingAccountNumber}} created</h4>
+                        {{/if}}
+                        {{#if chequingAccountNumber}}
+                        <h4 style="text-align:left">Chequing Account {{chequingAccountNumber}} created</h4>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-4 col-md-2 p-0">
+            <div class="right-sidebar">
+                <form name="serviceForm">
+                    <ul class="navbar-nav">
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="serviceType" id="balance"
+                                    value="balance">
+                                <label class="form-check-label" for="balance">
+                                    Balance
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="serviceType" id="deposit" value="1">
+                                <label class="form-check-label" for="deposit">
+                                    Deposit
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="serviceType" id="openAccount"
+                                    value="openAccount">
+                                <label class="form-check-label" for="openAccount">
+                                    Open an account
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="serviceType" id="withdrawal"
+                                    value="withdrawal">
+                                <label class="form-check-label" for="withdrawal">
+                                    Withdrawal
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    document.getElementById('userDisplayName').innerHTML = localStorage.getItem('username');
+    function showLogout() {
+        console.log("showLogout");
+        document.getElementById('logout-btn').style.display = 'block';
+    }
+    function hideLogout() {
+        console.log("hideLogout");
+        document.getElementById('logout-btn').style.display = 'none';
+    }
+    var rad = document.serviceForm.serviceType;
+    //var prev = null;
+    for (var i = 0; i < rad.length; i++) {
+        rad[i].addEventListener('change', function () {
+            
+            console.log(this.value)
+            if(this.value == 'openAccount'){
+                fetch('/account-type');
+                window.location ='/account-type';
+            }
+        });
+    }
+    function logout() {
+        
+        window.location = '/';
+        localStorage.clear();
+    }
+</script>

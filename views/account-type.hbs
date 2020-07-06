@@ -1,0 +1,86 @@
+<script>
+    function checkToken() {
+        if (!localStorage.getItem('username')) {
+            //alert(3);
+            window.location = '/unauthorised';
+        }
+    }
+    window.load = checkToken();
+</script>
+<nav class="navbar navbar-expand-sm navbar-dark topnav">
+    <a class="navbar-brand" href="#">WebBank</a>
+    <div class="navbar ml-auto">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item" onmouseenter="showLogout()" onmouseleave="hideLogout()">
+                <a class="nav-link" href="#" id="userDisplayName">{{username}}</a>
+                <div class="btn" id="logout-btn">
+                    <span class="dropdown-item" onclick="logout()">Logout</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row justify-content-sm-center">
+        <div class="col-sm-4 col-md-5 p-0">
+            <br/><br/><br/><br/>
+            <div class="card">
+                <div class="card-header">Account Type:</div>
+                <div class="card-body">
+                    <form name="accountTypeForm">
+                        <ul class="navbar-nav">
+                            <li style="margin-bottom: 4px;border-bottom:1px solid #d6d6d6;padding-bottom:10px">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="accountType" id="chequing"
+                                        value="chequing">
+                                    <label class="form-check-label" for="chequing">
+                                        Chequing
+                                    </label>
+                                </div>
+                            </li>
+                            <li style="padding-top:10px">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="accountType" id="saving"
+                                        value="saving">
+                                    <label class="form-check-label" for="saving">
+                                        Saving
+                                    </label>
+                                </div>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    //let accountNumber = 12345678;
+    document.getElementById('userDisplayName').innerHTML = localStorage.getItem('username');
+    function showLogout() {
+        console.log("showLogout");
+        document.getElementById('logout-btn').style.display = 'block';
+    }
+    function hideLogout() {
+        console.log("hideLogout");
+        document.getElementById('logout-btn').style.display = 'none';
+    }
+    var rad = document.accountTypeForm.accountType;
+    //var prev = null;
+    for (var i = 0; i < rad.length; i++) {
+        rad[i].addEventListener('change', function () {
+
+            let req = {
+                accountType: this.value,
+                username: localStorage.getItem('username')
+            }
+            window.location.href = '/home?username=' + localStorage.getItem('username') + '&accountType=' + this.value
+        });
+    }
+    function logout() {
+        localStorage.clear();
+        window.location = '/login'
+    }
+</script>
