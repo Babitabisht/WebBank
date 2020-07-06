@@ -1,1 +1,25 @@
-<h2>deposit</h2>
+<div class="container mt-5 mb-5">
+    <div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Balance</h5>
+    {{!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> --}}
+    <p class="card-text">Account Number: {{accountNumber}} </p>
+    <form action="/deposit" method="POST" class="mb-5">
+        <div class="row mb-2">
+            <div class="col">
+                 <input type="text" name="accountNumber" id="" hidden class="form-control" placeholder="deposit amount" value={{accountNumber}}></div>
+            </div>
+            <div class="col">
+                
+                <input type="number" name="depositAmount" id="" class="form-control" placeholder="deposit amount"></div>
+        </div>
+        <input type="submit" value="submit" class="btn btn-primary mb-1">
+         <a href="/home" class="btn btn-danger">Cancel</a>
+    </form>  
+  
+   
+    {{!-- <a href="/home" class="btn btn-primary">Home</a> --}}
+    
+  </div>
+</div>
+</div>

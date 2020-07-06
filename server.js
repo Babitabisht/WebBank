@@ -111,6 +111,25 @@ app.get("/withdrawal", (req, res) => {
 });
 
 
+/* post endpoints */
+app.post("/deposit", (req, res) => {
+
+  console.log('---depoisr post---',req.body);
+  
+  // res.render("balance");
+});
+
+app.post("/createAccount", (req, res) => {
+  console.log("---createAccount post---", req.body);
+
+  // res.render("balance");
+});
+
+app.post("/withdrawal", (req, res) => {
+   console.log("---withdrawal post---", req.body);
+
+});
+
 
 
 //Makes the app listen to port 3000
