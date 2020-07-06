@@ -46,6 +46,7 @@ app.get("/home", (req, res) => {
 });
 
 app.get("/account-type", (req, res) => {
+    console.log("account---");
   res.render("account-type");
 });
 
@@ -95,6 +96,22 @@ app.get("/unauthorised", (req, res) => {
 app.get("/register", (req, res) => {
   res.render("register");
 });
+
+/* get endpints  */
+app.get("/balance", (req, res) => {
+  res.render("balance");
+});
+
+app.get("/deposit", (req, res) => {
+  res.render("deposit");
+});
+
+app.get("/withdrawal", (req, res) => {
+  res.render("withdrawal");
+});
+
+
+
 
 //Makes the app listen to port 3000
 app.listen(port, () => console.log(`App listening to port ${port}`));

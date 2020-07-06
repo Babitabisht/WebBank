@@ -1,26 +1,5 @@
-<script>
-    function checkToken() {
-       // alert("run");
-        if (!localStorage.getItem('username')) {
-            //alert(3);
-            window.location = '/unauthorised';
-        }
-    }
-    window.load = checkToken();
-</script>
-<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
-    <a class="navbar-brand" href="#">WebBank</a>
-    <div class="navbar-collapse" id="collapsibleNavbar">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item" onmouseenter="showLogout()" onmouseleave="hideLogout()">
-                <a class="nav-link" href="#" id="userDisplayName"></a>
-                <div class="btn" id="logout-btn">
-                    <span class="dropdown-item" onclick="logout()">Logout</span>
-                </div>
-            </li>
-        </ul>
-    </div>
-</nav>
+
+
 <div class="container-fluid">
     <div class="row justify-content-sm-center">
         <div class="col-sm-8 col-md-10 my-auto p-0">
@@ -78,7 +57,7 @@
                         </li>
                         <li>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="serviceType" id="deposit" value="1">
+                                <input class="form-check-input" type="radio" name="serviceType" id="deposit" value="deposit">
                                 <label class="form-check-label" for="deposit">
                                     Deposit
                                 </label>
@@ -108,32 +87,3 @@
         </div>
     </div>
 </div>
-<script>
-
-    document.getElementById('userDisplayName').innerHTML = localStorage.getItem('username');
-    function showLogout() {
-        console.log("showLogout");
-        document.getElementById('logout-btn').style.display = 'block';
-    }
-    function hideLogout() {
-        console.log("hideLogout");
-        document.getElementById('logout-btn').style.display = 'none';
-    }
-    var rad = document.serviceForm.serviceType;
-    //var prev = null;
-    for (var i = 0; i < rad.length; i++) {
-        rad[i].addEventListener('change', function () {
-            
-            console.log(this.value)
-            if(this.value == 'openAccount'){
-                fetch('/account-type');
-                window.location ='/account-type';
-            }
-        });
-    }
-    function logout() {
-        
-        window.location = '/';
-        localStorage.clear();
-    }
-</script>

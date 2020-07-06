@@ -18,10 +18,58 @@
 
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  {{!-- <script>
+    function checkToken() {
+       // alert("run");
+        if (!localStorage.getItem('username')) {
+            //alert(3);
+            window.location = '/unauthorised';
+        }
+    }
+    window.load = checkToken();
+</script> --}}
 </head>
 
 <body>
+{{> _header}}
   {{{body}}}
 </body>
+<script>
 
+    document.getElementById('userDisplayName').innerHTML = localStorage.getItem('username');
+    function showLogout() {
+        console.log("showLogout");
+        document.getElementById('logout-btn').style.display = 'block';
+    }
+    function hideLogout() {
+        console.log("hideLogout");
+        document.getElementById('logout-btn').style.display = 'none';
+    }
+    var rad = document.serviceForm.serviceType;
+    //var prev = null;
+    for (var i = 0; i < rad.length; i++) {
+        rad[i].addEventListener('change', function () {
+            
+            console.log(this.value)
+            if(this.value == 'openAccount'){
+                fetch('/account-type');
+                window.location ='/account-type';
+            }else if(this.value == 'balance'){
+               fetch('/balance');
+                window.location ='/balance';
+            }else if(this.value == 'deposit'){
+               fetch('/deposit');
+                window.location ='/deposit';
+            }else if(this.value == 'withdrawal'){
+               fetch('/withdrawal');
+                window.location ='/withdrawal';
+            }
+        });
+    }
+    function logout() {
+        
+        window.location = '/';
+        localStorage.clear();
+    }
+</script>
 </html>
