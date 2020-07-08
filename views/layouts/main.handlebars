@@ -46,23 +46,24 @@
         document.getElementById('logout-btn').style.display = 'none';
     }
     var rad = document.serviceForm.serviceType;
+    var accountNumber = document.serviceForm.accountNumber;
     //var prev = null;
     for (var i = 0; i < rad.length; i++) {
         rad[i].addEventListener('change', function () {
             
-            console.log(this.value)
+            console.log(this.value, accountNumber.value)
             if(this.value == 'openAccount'){
                 fetch('/account-type');
-                window.location ='/account-type';
+                window.location =`/account-type?accountNumber=${accountNumber.value}`;
             }else if(this.value == 'balance'){
-               fetch('/balance');
-                window.location ='/balance';
+               fetch(`/balance`);
+                window.location =`/balance?accountNumber=${accountNumber.value}`;
             }else if(this.value == 'deposit'){
-               fetch('/deposit');
-                window.location ='/deposit';
+               fetch(`/deposit?accountNumber=${accountNumber.value}`);
+                window.location =`/deposit?accountNumber=${accountNumber.value}`;
             }else if(this.value == 'withdrawal'){
-               fetch('/withdrawal');
-                window.location ='/withdrawal';
+               fetch(`/withdrawal?accountNumber=${accountNumber.value}`);
+                window.location =`/withdrawal`;
             }
         });
     }
