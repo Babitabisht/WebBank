@@ -38,25 +38,11 @@ app.use(
   })
 );
 
-/* app.use(function (req, res, next) {
-  if (req.mySession.seenyou) {
-    res.setHeader("X-Seen-You", "true");
-  } else {
-    // setting a property will automatically cause a Set-Cookie response
-    // to be sent
-    req.mySession.seenyou = true;
-    res.setHeader("X-Seen-You", "false");
-  }
-}); */
+
 
 
 // middleware function to check for logged-in users
-var sessionChecker = (req, res, next) => {
-  console.log(
-    "req.mySession.username",
-    req.mySession.username
-  );
-  
+var sessionChecker = (req, res, next) => { 
     if (req.mySession.username) {
       next();
     } else {
@@ -89,38 +75,17 @@ app.get("/home", sessionChecker, (req, res) => {
               accountNumbers: accountNumbers,
             });
       });
- 
 
-
-  // if (req.query.accountType == "saving") {
-  //   console.log("-- req.mySession.username", req.mySession.username);
-    
-  //   res.render("home", {
-  //     username: req.mySession.username,
-  //     savingAccountNumber: accntNo,
-  //   });
-  // } else if (req.query.accountType == "chequing") {
-  //   res.render("home", {
-  //     username: req.query.username,
-  //     chequingAccountNumber: accntNo,
-  //   });
-  // } else {
-  //   res.render("home");
-  // }
 });
 
 app.get("/account-type",sessionChecker, (req, res) => {
-  console.log("--accountNumber",req.query.accountNumber);
   fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
     if (err) {
       console.log("File read failed:", err);
       return;
     }
     accountsData = JSON.parse(jsonString);
-    
   });
- 
-  
   res.render("account-type");
 });
 
@@ -176,7 +141,6 @@ app.get("/register", (req, res) => {
 
 /* get endpints  */
 app.get("/balance",sessionChecker, (req, res) => {
-    console.log("--accountNumber", req.query.accountNumber);
     fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
       if (err) {
         console.log("File read failed:", err);
@@ -193,7 +157,6 @@ app.get("/balance",sessionChecker, (req, res) => {
         accountNumber: req.query.accountNumber,
         accountInfo: accountInfo,
       });
-
     });
 });
 
@@ -202,13 +165,12 @@ app.get("/deposit", (req, res) => {
 });
 
 app.get("/withdrawal", (req, res) => {
-  res.render("withdrawal");
+  res.render("withdrawal", { accountNumber: req.query.accountNumber });
 });
 
 
 /* post endpoints */
 app.post("/deposit",sessionChecker, (req, res) => {
-  console.log('---depoisr post---',req.body);
   let { depositAmount, accountNumber } = req.body;
       fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
         if (err) {
@@ -224,16 +186,10 @@ app.post("/deposit",sessionChecker, (req, res) => {
               accountInfo.accountBalance =
                 parseFloat(accountInfo.accountBalance) +
                 parseFloat(depositAmount);
-                console.log(
-                  "-accountInfo.accountBalance ",
-                  accountInfo.accountBalance
-                );
                 
             };
           }
         }
-        console.log("----------sww---", accountsData);
-        
          fs.writeFile(
            "./accounts.json",
            JSON.stringify(accountsData),
@@ -242,21 +198,16 @@ app.post("/deposit",sessionChecker, (req, res) => {
            }
          );
         res.redirect(`balance?accountNumber=${accountNumber}`);
-        // res.render("balance", {
-        //   accountNumber: accountNumber
-        // });
       });
-  // res.render("balance");
 });
 
 app.post("/createAccount",sessionChecker, (req, res) => {
-  console.log("---createAccount post---", req.body);
+  let accountNumber;
   fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
     if (err) {
       console.log("File read failed:", err);
       return;
     }
-    console.log("File data:",typeof jsonString);
     accountsData = JSON.parse(jsonString);
     accountNumber = `000000${Object.keys(accountsData).length}`;
     accountsData[accountNumber] = {
@@ -266,17 +217,44 @@ app.post("/createAccount",sessionChecker, (req, res) => {
       fs.writeFile("./accounts.json", JSON.stringify(accountsData), (err) => {
         if (err) console.log("Error writing file:", err);
       });
+        res.render("home", {
+          msg: `Account type ${req.body.accountType} with account number ${accountNumber} is created`,
+        });
   });
-  res.json({ statusCode: 1, msg: "Account created" });
-  // res.render("balance");
 });
 
 app.post("/withdrawal",sessionChecker, (req, res) => {
-   console.log("---withdrawal post---", req.body);
+ let { withdrawalAmount, accountNumber } = req.body;
+ fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
+   if (err) {
+     console.log("File read failed:", err);
+     return;
+   }
+   let accountsData = JSON.parse(jsonString);
+   let accountInfo;
+   for (var key in accountsData) {
+     if (accountsData.hasOwnProperty(key)) {
+       if (key == req.body.accountNumber) {
+         accountInfo = accountsData[key];
+         if (parseFloat(withdrawalAmount) > parseFloat(accountInfo.accountBalance)){
+           res.render(`withdrawal`, {
+             accountNumber: accountNumber,
+             msg: "Insufficient Funds",
+           });
+           return;
+         }  
+         accountInfo.accountBalance =
+           parseFloat(accountInfo.accountBalance) - parseFloat(withdrawalAmount);
+       }
+     }
+   }
+   fs.writeFile("./accounts.json", JSON.stringify(accountsData), (err) => {
+     if (err) console.log("Error writing file:", err);
+   });
+   res.redirect(`balance?accountNumber=${accountNumber}`);
 
+ });
 });
-
-
 
 //Makes the app listen to port 3000
 app.listen(port, () => console.log(`App listening to port ${port}`));

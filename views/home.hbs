@@ -1,17 +1,25 @@
-
+<div class="container">
+      {{#if msg}}
+<div class="alert alert-success mt-2 mb-3" role="alert">
+  {{msg}}
+</div>
+  {{/if}}
+</div>
 
 <div class="container-fluid">
+   
     <div class="row justify-content-sm-center">
         <div class="col-sm-8 col-md-10 my-auto p-0">
             <div class="col-md-6 mx-auto">
                 <div class="card border-info text-center">
                     <div class="card-body">
-                        <h4 class="text-center"> hey {{username}}  {{accountNumbers}}</h4>
+                        <h4 class="text-center"> Hey {{username}}</h4>
                         <br />
                         <img src="/bank.jpg" alt="" width="200px">
                         <form class="form-signin">
-                            {{!-- <input type="text" class="form-control mb-2" placeholder="Account Number"
+                            <input type="text" class="form-control mb-2" placeholder="Account Number"
                                 id="account-number" required autofocus>
+                            {{!-- 
                             <br />
                             <div style="text-align: left;">
                                 <div class="form-check-inline">

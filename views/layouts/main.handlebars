@@ -63,7 +63,7 @@
                 window.location =`/deposit?accountNumber=${accountNumber.value}`;
             }else if(this.value == 'withdrawal'){
                fetch(`/withdrawal?accountNumber=${accountNumber.value}`);
-                window.location =`/withdrawal`;
+                window.location =`/withdrawal?accountNumber=${accountNumber.value}`;
             }
         });
     }
