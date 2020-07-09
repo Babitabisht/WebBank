@@ -1,25 +1,29 @@
 <div class="container mt-5 mb-5">
-  {{#if msg}}
-<div class="alert alert-danger" role="alert">
-  {{msg}}
-</div>
-  {{/if}}
-  <p></p>
+    {{#if msg}}
+    <div class="alert alert-danger" role="alert">
+        {{msg}}
+    </div>
+    {{/if}}
+    <p></p>
     <div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Withdraw Balance</h5>
-    <p class="card-text">Account Number: {{accountNumber}} </p>
-    <form action="/withdrawal" method="POST" class="mb-5">
-        <div class="row mb-2">
-            <div class="col">
-                 <input type="text" name="accountNumber" id="" hidden class="form-control" 
-                  value={{accountNumber}}></div>
-            </div>
-            <div class="col"> 
-                <input type="number" name="withdrawalAmount" id="" class="form-control" placeholder="deposit amount"></div>
-                <input type="submit" value="submit" class="btn btn-primary mb-1">
-         <a href="/home" class="btn btn-danger">Cancel</a>
-      </div>  
-    </form>  
-  </div>
+        <div class="card-body">
+            <h5 class="card-title">Withdraw Balance</h5>
+            <p class="card-text">Account Number: {{accountNumber}} </p>
+            <form action="/withdrawal" method="POST" class="mb-5">
+                <div class="row mb-2">
+                    <div class="col">
+                        <input type="text" name="accountNumber" id="" hidden class="form-control"
+                            value={{accountNumber}}></div>
+                </div>
+                <div class="col">
+                    <input type="number" name="withdrawalAmount" id="" class="form-control"
+                        placeholder="deposit amount">
+
+                 <input type="submit" value="submit" class="btn btn-primary mt-2">
+                <a href="/home" class="btn btn-danger mt-2">Cancel</a>        
+                </div>
+               
+        </div>
+        </form>
+    </div>
 </div>

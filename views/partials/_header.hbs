@@ -1,0 +1,18 @@
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+    <a class="navbar-brand" href="/home">WebBank</a>
+    <div class="navbar-collapse" id="collapsibleNavbar">
+                 {{!-- <ul class="navbar-nav mr-auto">
+                     <li class="nav-item">
+                        <a class="nav-link ml-auto" href="#" id="userDisplayName"></a>
+                     </li>
+                 </ul> --}}
+                {{!-- <div class="btn" id="logout-btn">
+                    <span class="dropdown-item" onclick="logout()">Logout</span>
+                </div> --}}
+                <ul class="navbar-nav ml-auto">
+                     {{# if username}}
+                     <li class="nav-item"> <a class="nav-link ml-auto"  href="/logout">Logout</a></li>
+                {{/if}}
+                </ul>
+    </div>
+</nav>
