@@ -7,12 +7,12 @@ let fs = require("fs");
 const app = express();
 const port = 3000;
 
-
 //Loads the handlebars module
 const exphbs = require("express-handlebars");
-
-app.engine("hbs", exphbs());
+app.engine("hbs", exphbs({ defaultLayout: "main", extname: ".hbs" }));
+// app.engine("hbs", exphbs());
 app.set("view engine", "hbs");
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -75,7 +75,9 @@ app.get("/account-type", sessionChecker, (req, res) => {
     }
     accountsData = JSON.parse(jsonString);
   });
-  res.render("account-type");
+  res.render("account-type", {
+    username: req.mySession.username
+  });
 });
 
 app.get("/createChequing", sessionChecker, (req, res) => {
@@ -129,7 +131,10 @@ app.get("/register", (req, res) => {
 /* get endpints  */
 app.get("/balance", sessionChecker, (req, res) => {
   if (req.query.accountNumber == "0000000") {
-    res.render("home", { msg: "Account number is missing" });
+    res.render("home", {
+      msg: "Account number is missing",
+      username: req.mySession.username,
+    });
   } else {
     fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
       if (err) {
@@ -143,17 +148,22 @@ app.get("/balance", sessionChecker, (req, res) => {
           if (key == req.query.accountNumber) accountInfo = accountsData[key];
         }
       }
-      accountsData.lastID = req.query.accountNumber;
+     
       console.log("accountInfo", accountInfo);
       if (accountInfo == "" || accountInfo == undefined) {
-        res.render("home", {msg: "Invalid account number"});
+        res.render("home", {
+          msg: "Invalid account number",
+          username: req.mySession.username
+        });
       } else {
+         accountsData.lastID = req.query.accountNumber;
         fs.writeFile("./accounts.json", JSON.stringify(accountsData), (err) => {
           if (err) console.log("Error writing file:", err);
         });
         res.render("balance", {
           accountNumber: req.query.accountNumber,
           accountInfo: accountInfo,
+          username: req.mySession.username,
         });
       }
     });
@@ -162,17 +172,74 @@ app.get("/balance", sessionChecker, (req, res) => {
 
 app.get("/deposit", sessionChecker, (req, res) => {
   if (req.query.accountNumber == "0000000") {
-    res.render("home", { msg: "Account number is missing" });
+    res.render("home", {
+      msg: "Account number is missing",
+      username: req.mySession.username,
+    });
   } else {
-    res.render("deposit", { accountNumber: req.query.accountNumber });
+
+     fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
+       if (err) {
+         console.log("File read failed:", err);
+         return;
+       }
+       let accountsData = JSON.parse(jsonString);
+       let accountInfo;
+       for (var key in accountsData) {
+         if (accountsData.hasOwnProperty(key)) {
+           if (key == req.query.accountNumber) {
+             accountInfo = accountsData[key];
+           }
+         }
+       }
+       if (accountInfo == "" || accountInfo == undefined) {
+         res.render("home", {
+           msg: "Invalid account number",
+           username: req.mySession.username,
+         });
+       } else {
+            res.render("deposit", {
+              accountNumber: req.query.accountNumber,
+              username: req.mySession.username,
+            });
+       }
+     });
   }
 });
 
 app.get("/withdrawal", sessionChecker, (req, res) => {
   if (req.query.accountNumber == "0000000") {
-    res.render("home", { msg: "Account number is missing" });
+    res.render("home", {
+      msg: "Account number is missing",
+      username: req.mySession.username,
+    });
   } else {
-    res.render("withdrawal", { accountNumber: req.query.accountNumber });
+     fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
+       if (err) {
+         console.log("File read failed:", err);
+         return;
+       }
+       let accountsData = JSON.parse(jsonString);
+       let accountInfo;
+       for (var key in accountsData) {
+         if (accountsData.hasOwnProperty(key)) {
+           if (key == req.query.accountNumber) {
+             accountInfo = accountsData[key];
+           }
+         }
+       }
+       if (accountInfo == "" || accountInfo == undefined) {
+         res.render("home", {
+           msg: "Invalid account number",
+           username: req.mySession.username,
+         });
+       } else {
+          res.render("withdrawal", {
+            accountNumber: req.query.accountNumber,
+            username: req.mySession.username,
+          });
+       }
+     });   
   }
 });
 
@@ -196,15 +263,27 @@ app.post("/deposit", sessionChecker, (req, res) => {
         }
       }
     }
+     if (accountInfo == "" || accountInfo == undefined) {
+       res.render("home", {
+         msg: "Invalid account number",
+         username: req.mySession.username,
+       });
+     } else{
+            accountsData.lastID = req.body.accountNumber;
+            fs.writeFile(
+              "./accounts.json",
+              JSON.stringify(accountsData),
+              (err) => {
+                if (err) console.log("Error writing file:", err);
+              }
+            );
+            res.render("balance", {
+              accountNumber: accountNumber,
+              accountInfo: accountInfo,
+              username: req.mySession.username,
+            });
+     }
 
-    accountsData.lastID = req.body.accountNumber;
-    fs.writeFile("./accounts.json", JSON.stringify(accountsData), (err) => {
-      if (err) console.log("Error writing file:", err);
-    });
-    res.render("balance", {
-      accountNumber: accountNumber,
-      accountInfo: accountInfo,
-    });
   });
 });
 
@@ -236,6 +315,7 @@ app.post("/createAccount", sessionChecker, (req, res) => {
     });
     res.render("home", {
       msg: `Account type ${req.body.accountType} with account number ${accountNumber} is created`,
+      username: req.mySession.username,
     });
   });
 });
@@ -260,6 +340,7 @@ app.post("/withdrawal", sessionChecker, (req, res) => {
             res.render(`withdrawal`, {
               accountNumber: accountNumber,
               msg: "Insufficient Funds",
+              username: req.mySession.username,
             });
             return;
           }
@@ -297,7 +378,10 @@ app.post("/home", sessionChecker, (req, res) => {
       res.redirect(`/withdrawal?accountNumber=${modifiedAccountNumber}`);
       break;
     case "openAccount":
-      res.render("account-type", { accountNumber: modifiedAccountNumber });
+      res.render("account-type", {
+        accountNumber: modifiedAccountNumber,
+        username: req.mySession.username,
+      });
       break;
   }
 });
