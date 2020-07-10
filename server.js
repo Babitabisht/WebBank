@@ -13,7 +13,6 @@ app.engine("hbs", exphbs({ defaultLayout: "main", extname: ".hbs" }));
 // app.engine("hbs", exphbs());
 app.set("view engine", "hbs");
 
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -76,7 +75,7 @@ app.get("/account-type", sessionChecker, (req, res) => {
     accountsData = JSON.parse(jsonString);
   });
   res.render("account-type", {
-    username: req.mySession.username
+    username: req.mySession.username,
   });
 });
 
@@ -148,19 +147,20 @@ app.get("/balance", sessionChecker, (req, res) => {
           if (key == req.query.accountNumber) accountInfo = accountsData[key];
         }
       }
-     
+
       console.log("accountInfo", accountInfo);
       if (accountInfo == "" || accountInfo == undefined) {
         res.render("home", {
           msg: "Invalid account number",
-          username: req.mySession.username
+          username: req.mySession.username,
         });
       } else {
-         accountsData.lastID = req.query.accountNumber;
+        accountsData.lastID = req.query.accountNumber;
         fs.writeFile("./accounts.json", JSON.stringify(accountsData), (err) => {
           if (err) console.log("Error writing file:", err);
         });
-        res.render("balance", {
+        res.render("home", {
+          balance: true,
           accountNumber: req.query.accountNumber,
           accountInfo: accountInfo,
           username: req.mySession.username,
@@ -177,33 +177,32 @@ app.get("/deposit", sessionChecker, (req, res) => {
       username: req.mySession.username,
     });
   } else {
-
-     fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
-       if (err) {
-         console.log("File read failed:", err);
-         return;
-       }
-       let accountsData = JSON.parse(jsonString);
-       let accountInfo;
-       for (var key in accountsData) {
-         if (accountsData.hasOwnProperty(key)) {
-           if (key == req.query.accountNumber) {
-             accountInfo = accountsData[key];
-           }
-         }
-       }
-       if (accountInfo == "" || accountInfo == undefined) {
-         res.render("home", {
-           msg: "Invalid account number",
-           username: req.mySession.username,
-         });
-       } else {
-            res.render("deposit", {
-              accountNumber: req.query.accountNumber,
-              username: req.mySession.username,
-            });
-       }
-     });
+    fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
+      if (err) {
+        console.log("File read failed:", err);
+        return;
+      }
+      let accountsData = JSON.parse(jsonString);
+      let accountInfo;
+      for (var key in accountsData) {
+        if (accountsData.hasOwnProperty(key)) {
+          if (key == req.query.accountNumber) {
+            accountInfo = accountsData[key];
+          }
+        }
+      }
+      if (accountInfo == "" || accountInfo == undefined) {
+        res.render("home", {
+          msg: "Invalid account number",
+          username: req.mySession.username,
+        });
+      } else {
+        res.render("deposit", {
+          accountNumber: req.query.accountNumber,
+          username: req.mySession.username,
+        });
+      }
+    });
   }
 });
 
@@ -214,32 +213,32 @@ app.get("/withdrawal", sessionChecker, (req, res) => {
       username: req.mySession.username,
     });
   } else {
-     fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
-       if (err) {
-         console.log("File read failed:", err);
-         return;
-       }
-       let accountsData = JSON.parse(jsonString);
-       let accountInfo;
-       for (var key in accountsData) {
-         if (accountsData.hasOwnProperty(key)) {
-           if (key == req.query.accountNumber) {
-             accountInfo = accountsData[key];
-           }
-         }
-       }
-       if (accountInfo == "" || accountInfo == undefined) {
-         res.render("home", {
-           msg: "Invalid account number",
-           username: req.mySession.username,
-         });
-       } else {
-          res.render("withdrawal", {
-            accountNumber: req.query.accountNumber,
-            username: req.mySession.username,
-          });
-       }
-     });   
+    fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
+      if (err) {
+        console.log("File read failed:", err);
+        return;
+      }
+      let accountsData = JSON.parse(jsonString);
+      let accountInfo;
+      for (var key in accountsData) {
+        if (accountsData.hasOwnProperty(key)) {
+          if (key == req.query.accountNumber) {
+            accountInfo = accountsData[key];
+          }
+        }
+      }
+      if (accountInfo == "" || accountInfo == undefined) {
+        res.render("home", {
+          msg: "Invalid account number",
+          username: req.mySession.username,
+        });
+      } else {
+        res.render("withdrawal", {
+          accountNumber: req.query.accountNumber,
+          username: req.mySession.username,
+        });
+      }
+    });
   }
 });
 
@@ -263,60 +262,135 @@ app.post("/deposit", sessionChecker, (req, res) => {
         }
       }
     }
-     if (accountInfo == "" || accountInfo == undefined) {
-       res.render("home", {
-         msg: "Invalid account number",
-         username: req.mySession.username,
-       });
-     } else{
-            accountsData.lastID = req.body.accountNumber;
-            fs.writeFile(
-              "./accounts.json",
-              JSON.stringify(accountsData),
-              (err) => {
-                if (err) console.log("Error writing file:", err);
-              }
-            );
-            res.render("balance", {
-              accountNumber: accountNumber,
-              accountInfo: accountInfo,
-              username: req.mySession.username,
-            });
-     }
-
+    if (accountInfo == "" || accountInfo == undefined) {
+      res.render("home", {
+        msg: "Invalid account number",
+        username: req.mySession.username,
+      });
+    } else {
+      accountsData.lastID = req.body.accountNumber;
+      fs.writeFile("./accounts.json", JSON.stringify(accountsData), (err) => {
+        if (err) console.log("Error writing file:", err);
+      });
+      res.render("home", {
+        balance:true,
+        accountNumber: accountNumber,
+        accountInfo: accountInfo,
+        username: req.mySession.username,
+      });
+    }
   });
 });
 
 app.post("/createAccount", sessionChecker, (req, res) => {
   let accountNumber;
-  fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
+  let { accountType } = req.body;
+  fs.readFile("./user.json", "utf8", (err, jsonString) => {
     if (err) {
       console.log("File read failed:", err);
       return;
     }
+    let userData = JSON.parse(jsonString);
+    currentUser = userData.filter(
+      (user) => user.username == req.mySession.username
+    );
+    if (accountType == "chequing") {
+      if (
+        currentUser[0].chequingAccount != undefined ||
+        "chequingAccount" in currentUser[0]
+      ) {
+        res.render("home", {
+          msg: `Account type ${req.body.accountType} already exist`,
+          username: req.mySession.username,
+        });
+      } else {
+        fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
+          if (err) {
+            console.log("File read failed:", err);
+            return;
+          }
 
-    accountsData = JSON.parse(jsonString);
-    // let strLength = accountsData.length;
-    let numZero = "";
-    let accountNumber;
-    totalAccounts = Object.keys(accountsData).length;
-    str = totalAccounts.toString();
-    str.length < 7
-      ? (numZero = "0".repeat(7 - str.length))
-      : (numZero = numZero);
-    accountNumber = numZero.concat(totalAccounts);
-    accountsData[accountNumber] = {
-      accountType: req.body.accountType,
-      accountBalance: 0,
-    };
-    accountsData.lastID = accountNumber;
-    fs.writeFile("./accounts.json", JSON.stringify(accountsData), (err) => {
-      if (err) console.log("Error writing file:", err);
-    });
-    res.render("home", {
-      msg: `Account type ${req.body.accountType} with account number ${accountNumber} is created`,
-      username: req.mySession.username,
-    });
+          accountsData = JSON.parse(jsonString);
+          // let strLength = accountsData.length;
+          let numZero = "";
+          let accountNumber;
+          totalAccounts = Object.keys(accountsData).length;
+          str = totalAccounts.toString();
+          str.length < 7
+            ? (numZero = "0".repeat(7 - str.length))
+            : (numZero = numZero);
+          accountNumber = numZero.concat(totalAccounts);
+          accountsData[accountNumber] = {
+            accountType: req.body.accountType,
+            accountBalance: 0,
+          };
+          accountsData.lastID = accountNumber;
+          currentUser[0].chequingAccount = accountNumber;
+          fs.writeFile(
+            "./accounts.json",
+            JSON.stringify(accountsData),
+            (err) => {
+              if (err) console.log("Error writing file:", err);
+            }
+          );
+          fs.writeFile("./user.json", JSON.stringify(userData), (err) => {
+            if (err) console.log("Error writing file:", err);
+          });
+          res.render("home", {
+            msg: `Account type ${req.body.accountType} with account number ${accountNumber} is created`,
+            username: req.mySession.username,
+          });
+        });
+      }
+    } else {
+      if (
+        currentUser[0].savingAccount != undefined ||
+        "savingAccount" in currentUser[0]
+      ) {
+        res.render("home", {
+          msg: `Account type ${req.body.accountType} already exist`,
+          username: req.mySession.username,
+        });
+      } else {
+        fs.readFile("./accounts.json", "utf8", (err, jsonString) => {
+          if (err) {
+            console.log("File read failed:", err);
+            return;
+          }
+
+          accountsData = JSON.parse(jsonString);
+          // let strLength = accountsData.length;
+          let numZero = "";
+          let accountNumber;
+          totalAccounts = Object.keys(accountsData).length;
+          str = totalAccounts.toString();
+          str.length < 7
+            ? (numZero = "0".repeat(7 - str.length))
+            : (numZero = numZero);
+          accountNumber = numZero.concat(totalAccounts);
+          accountsData[accountNumber] = {
+            accountType: req.body.accountType,
+            accountBalance: 0,
+          };
+          accountsData.lastID = accountNumber;
+          currentUser[0].savingAccount = accountNumber;
+          fs.writeFile(
+            "./accounts.json",
+            JSON.stringify(accountsData),
+            (err) => {
+              if (err) console.log("Error writing file:", err);
+            }
+          );
+          fs.writeFile("./user.json", JSON.stringify(userData), (err) => {
+            if (err) console.log("Error writing file:", err);
+          });
+          res.render("home", {
+            msg: `Account type ${req.body.accountType} with account number ${accountNumber} is created`,
+            username: req.mySession.username,
+          });
+        });
+      }
+    }
   });
 });
 
