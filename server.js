@@ -148,7 +148,6 @@ app.get("/balance", sessionChecker, (req, res) => {
         }
       }
 
-      console.log("accountInfo", accountInfo);
       if (accountInfo == "" || accountInfo == undefined) {
         res.render("home", {
           msg: "Invalid account number",
@@ -273,7 +272,7 @@ app.post("/deposit", sessionChecker, (req, res) => {
         if (err) console.log("Error writing file:", err);
       });
       res.render("home", {
-        balance:true,
+        balance: true,
         accountNumber: accountNumber,
         accountInfo: accountInfo,
         username: req.mySession.username,
