@@ -1,1 +1,14 @@
-[{"username":"anything1","password":"123456"},{"username":"anything2","password":"123456","savingAccount":"0000003"},{"username":"anything3","password":"123456"}]
+[
+  {
+    "username": "anything1",
+    "password": "123456"
+  },
+  {
+    "username": "anything2",
+    "password": "123456"
+  },
+  {
+    "username": "anything3",
+    "password": "123456"
+  }
+]
