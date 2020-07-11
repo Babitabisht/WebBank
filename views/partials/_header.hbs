@@ -1,20 +1,12 @@
 <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
     <a class="navbar-brand" href="/home">WebBank</a>
     <div class="navbar-collapse" id="collapsibleNavbar">
-                 {{!-- <ul class="navbar-nav mr-auto">
-                     <li class="nav-item">
-                        <a class="nav-link ml-auto" href="#" id="userDisplayName"></a>
-                     </li>
-                 </ul> --}}
-                {{!-- <div class="btn" id="logout-btn">
-                    <span class="dropdown-item" onclick="logout()">Logout</span>
-                </div> --}}
                 <ul class="navbar-nav ml-auto">
                      {{# if username}}
-                     <li class="nav-item" onmouseenter="showLogout()" onmouseleave="hideLogout()">
-                <a class="nav-link" href="#" id="userDisplayName"></a>
-                <div class="btn" id="logout-btn">
-                   <a class="nav-link ml-auto class="dropdown-item""  href="/logout">Logout</a>
+                <li class="nav-item" onmouseenter="showLogout()" onmouseleave="hideLogout()">
+                <a class="nav-link " href="#" id="userDisplayName"></a>
+                <div  class="bg-primary text-light"   id="logout-btn"  >
+                   <a class="btn btn-primary btn-sm ml-auto"  href="/logout">Logout</a>
                    
                 </div>
                 {{/if}}
